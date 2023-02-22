@@ -2,10 +2,14 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { FinancialWellnessController } from './financial-wellness/financial-wellness.controller';
+import { FinancialWellnessController } from './financial-wellness/controller/financial-wellness.controller';
 import { FinancialWellnessModule } from './financial-wellness/financial-wellness.module';
-import { FinancialWellnessService } from './financial-wellness/financial-wellness.service';
-import { Score } from './financial-wellness/score.entity';
+import { Score } from './financial-wellness/entity/score.entity';
+import { FinancialWellnessService } from './financial-wellness/service/financial-wellness.service';
+import { TaxController } from './tax/controller/tax.controller';
+import { TaxService } from './tax/service/tax.service';
+import { Tax } from './tax/entity/tax.entity';
+import { TaxModule } from './tax/tax.module';
 
 @Module({
   imports: [
@@ -17,13 +21,14 @@ import { Score } from './financial-wellness/score.entity';
       password: "123456",
       database: "origin",
       synchronize: true,
-      entities: [Score],
+      entities: [Score, Tax],
       migrations: [],
     }),
-    FinancialWellnessModule
+    FinancialWellnessModule,
+    TaxModule
   ],
-  controllers: [AppController, FinancialWellnessController],
-  providers: [AppService, FinancialWellnessService],
+  controllers: [AppController, FinancialWellnessController, TaxController],
+  providers: [AppService, FinancialWellnessService, TaxService]
 })
 export class AppModule {}
 
