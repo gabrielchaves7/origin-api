@@ -1,7 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 export enum TaxEnum {
-    ANNUAL_TAX = "ANNUAL_TAX",
+  ANNUAL_TAX = "ANNUAL_TAX",
 }
 
 @Entity()

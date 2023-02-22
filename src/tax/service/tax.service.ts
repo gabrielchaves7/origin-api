@@ -18,4 +18,8 @@ export class TaxService {
 
         return updatedTax;
     }
+
+    async getTax(name: TaxEnum): Promise<Tax> {
+        return await this.taxRepository.findOneBy({ name });
+    }
 }
