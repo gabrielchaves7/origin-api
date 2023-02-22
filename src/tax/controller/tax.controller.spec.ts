@@ -15,7 +15,10 @@ describe('TaxController', () => {
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
       controllers: [TaxController],
-      providers: [TaxService, { provide: getRepositoryToken(Tax), useFactory: repositoryMockFactory }],
+      providers: [
+        TaxService,
+        { provide: getRepositoryToken(Tax), useFactory: repositoryMockFactory },
+      ],
     }).compile();
 
     taxService = moduleRef.get<TaxService>(TaxService);
@@ -28,14 +31,16 @@ describe('TaxController', () => {
     tax.name = TaxEnum.ANNUAL_TAX;
     tax.value = 10;
     return tax;
-  }
+  };
   describe('Updating tax', () => {
     it('should call taxService.updateTax', async () => {
-      var spy = jest.spyOn(taxService, 'updateTax').mockImplementation(() => Promise.resolve(mockedTax()));
-      var result = await taxController.updateTax(new TaxDto("ANNUAL_TAX", 10));
+      var spy = jest
+        .spyOn(taxService, 'updateTax')
+        .mockImplementation(() => Promise.resolve(mockedTax()));
+      var result = await taxController.updateTax(new TaxDto('ANNUAL_TAX', 10));
       expect(result.name).toBe('ANNUAL_TAX');
       expect(result.value).toBe(10);
-      expect(spy).toHaveBeenCalledTimes(1);   
+      expect(spy).toHaveBeenCalledTimes(1);
     });
   });
 });

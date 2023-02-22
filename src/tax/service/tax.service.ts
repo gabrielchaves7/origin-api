@@ -6,20 +6,23 @@ import { Tax, TaxEnum } from '../entity/tax.entity';
 @Injectable()
 @Dependencies(getRepositoryToken(Tax))
 export class TaxService {
-    taxRepository: Repository<Tax>;
+  taxRepository: Repository<Tax>;
 
-    constructor(@InjectRepository(Tax) taxRepository: Repository<Tax>) {
-        this.taxRepository = taxRepository;
-    }
+  constructor(@InjectRepository(Tax) taxRepository: Repository<Tax>) {
+    this.taxRepository = taxRepository;
+  }
 
-    async updateTax(name: string, value: number): Promise<Tax> {
-        var updatedTax = this.taxRepository.create({ name: name as TaxEnum, value });
-        await this.taxRepository.save(updatedTax);
+  async updateTax(name: string, value: number): Promise<Tax> {
+    var updatedTax = this.taxRepository.create({
+      name: name as TaxEnum,
+      value,
+    });
+    await this.taxRepository.save(updatedTax);
 
-        return updatedTax;
-    }
+    return updatedTax;
+  }
 
-    async getTax(name: TaxEnum): Promise<Tax> {
-        return await this.taxRepository.findOneBy({ name });
-    }
+  async getTax(name: TaxEnum): Promise<Tax> {
+    return await this.taxRepository.findOneBy({ name });
+  }
 }

@@ -5,11 +5,10 @@ import { FinancialWellnessController } from './controller/financial-wellness.con
 import { Score } from './entity/score.entity';
 import { FinancialWellnessService } from './service/financial-wellness.service';
 
-
 @Module({
   imports: [TypeOrmModule.forFeature([Score]), TaxModule],
-  providers: [FinancialWellnessService,],
+  providers: [FinancialWellnessService],
   controllers: [FinancialWellnessController],
-  exports: [TypeOrmModule]
+  exports: [TypeOrmModule],
 })
-export class FinancialWellnessModule { }
+export class FinancialWellnessModule {}

@@ -11,17 +11,19 @@ export class FinancialWellnessService {
   scoreRepository: Repository<Score>;
   taxService: TaxService;
 
-  constructor(@InjectRepository(Score) scoreRepository: Repository<Score>, @Inject(TaxService) taxService: TaxService) {
+  constructor(
+    @InjectRepository(Score) scoreRepository: Repository<Score>,
+    @Inject(TaxService) taxService: TaxService,
+  ) {
     this.scoreRepository = scoreRepository;
     this.taxService = taxService;
   }
 
   async score(annualIncome: number, monthlyCosts: number): Promise<Score> {
-
     const tax: Tax = await this.taxService.getTax(TaxEnum.ANNUAL_TAX);
     var annualCosts = monthlyCosts * 12;
-    var annualNetCompensation = annualIncome - ((annualIncome * tax.value) / 100);
-    var annualCostsPercentage = ((annualCosts * 100) / annualNetCompensation);
+    var annualNetCompensation = annualIncome - (annualIncome * tax.value) / 100;
+    var annualCostsPercentage = (annualCosts * 100) / annualNetCompensation;
 
     var status = ScoreStatus.MEDIUM;
     if (annualCostsPercentage <= 25) {
@@ -30,7 +32,11 @@ export class FinancialWellnessService {
       status = ScoreStatus.LOW;
     }
 
-    var newScore = this.scoreRepository.create({ monthlyCosts, annualIncome, status });
+    var newScore = this.scoreRepository.create({
+      monthlyCosts,
+      annualIncome,
+      status,
+    });
     this.scoreRepository.save(newScore);
 
     return newScore;

@@ -1,9 +1,9 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum ScoreStatus {
-  LOW = "LOW",
-  MEDIUM = "MEDIUM",
-  HEALTHY = "HEALTHY",
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HEALTHY = 'HEALTHY',
 }
 
 @Entity()
@@ -18,7 +18,7 @@ export class Score {
   monthlyCosts: number;
 
   @Column({
-    type: "enum",
+    type: 'enum',
     enum: ScoreStatus,
     default: ScoreStatus.LOW,
   })

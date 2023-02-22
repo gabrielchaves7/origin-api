@@ -14,21 +14,20 @@ import { TaxModule } from './tax/tax.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: "postgres",
-      host: "localhost",
+      type: 'postgres',
+      host: 'localhost',
       port: 5432,
-      username: "postgres",
-      password: "123456",
-      database: "origin",
+      username: 'postgres',
+      password: '123456',
+      database: 'origin',
       synchronize: true,
       entities: [Score, Tax],
       migrations: [],
     }),
     FinancialWellnessModule,
-    TaxModule
+    TaxModule,
   ],
   controllers: [AppController, FinancialWellnessController, TaxController],
-  providers: [AppService, FinancialWellnessService, TaxService]
+  providers: [AppService, FinancialWellnessService, TaxService],
 })
 export class AppModule {}
-

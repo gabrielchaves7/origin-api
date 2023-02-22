@@ -40,7 +40,11 @@ describe('FinancialWellnessService', () => {
     mockGetTax();
   });
 
-  const createScore = (monthlyCosts: number, annualIncome: number, status: ScoreStatus): Score => {
+  const createScore = (
+    monthlyCosts: number,
+    annualIncome: number,
+    status: ScoreStatus,
+  ): Score => {
     var score = new Score();
     score.annualIncome = annualIncome;
     score.monthlyCosts = monthlyCosts;
@@ -74,7 +78,7 @@ describe('FinancialWellnessService', () => {
       var expectedScore = createScore(10, 1000, ScoreStatus.HEALTHY);
       var createSpy = jest.spyOn(mockedScoreRepository, 'create');
       var saveSpy = jest.spyOn(mockedScoreRepository, 'save');
-      
+
       await financialWellnessService.score(1000, 10);
       expect(createSpy).toHaveBeenCalledTimes(1);
       expect(createSpy).toHaveBeenCalledWith({

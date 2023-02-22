@@ -51,7 +51,7 @@ describe('TaxService', () => {
       await taxService.getTax(TaxEnum.ANNUAL_TAX);
 
       expect(findOneBySpy).toHaveBeenCalledTimes(1);
-      expect(findOneBySpy).toHaveBeenCalledWith({name: TaxEnum.ANNUAL_TAX});
+      expect(findOneBySpy).toHaveBeenCalledWith({ name: TaxEnum.ANNUAL_TAX });
     });
   });
 });

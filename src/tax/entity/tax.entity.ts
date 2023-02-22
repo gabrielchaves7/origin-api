@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 export enum TaxEnum {
-  ANNUAL_TAX = "ANNUAL_TAX",
+  ANNUAL_TAX = 'ANNUAL_TAX',
 }
 
 @Entity()
@@ -10,7 +10,7 @@ export class Tax {
   value: number;
 
   @PrimaryColumn({
-    type: "enum",
+    type: 'enum',
     enum: TaxEnum,
     default: TaxEnum.ANNUAL_TAX,
   })

@@ -8,6 +8,6 @@ import { TaxService } from './service/tax.service';
   imports: [TypeOrmModule.forFeature([Tax])],
   providers: [TaxService],
   controllers: [TaxController],
-  exports: [TypeOrmModule, TaxService]
+  exports: [TypeOrmModule, TaxService],
 })
-export class TaxModule { }
+export class TaxModule {}
