@@ -1,5 +1,7 @@
-import { Injectable, Dependencies } from '@nestjs/common';
+import { Injectable, Dependencies, Inject } from '@nestjs/common';
 import { getRepositoryToken, InjectRepository } from '@nestjs/typeorm';
+import { Tax, TaxEnum } from '../../tax/entity/tax.entity';
+import { TaxService } from '../../tax/service/tax.service';
 import { Repository } from 'typeorm';
 import { Score, ScoreStatus } from '../entity/score.entity';
 
@@ -7,16 +9,18 @@ import { Score, ScoreStatus } from '../entity/score.entity';
 @Dependencies(getRepositoryToken(Score))
 export class FinancialWellnessService {
   scoreRepository: Repository<Score>;
+  taxService: TaxService;
 
-  constructor(@InjectRepository(Score) scoreRepository: Repository<Score>) {
+  constructor(@InjectRepository(Score) scoreRepository: Repository<Score>, @Inject(TaxService) taxService: TaxService) {
     this.scoreRepository = scoreRepository;
+    this.taxService = taxService;
   }
 
-  get(annualIncome: number, monthlyCosts: number) {
+  async score(annualIncome: number, monthlyCosts: number): Promise<Score> {
 
-    const tax = 8;
+    const tax: Tax = await this.taxService.getTax(TaxEnum.ANNUAL_TAX);
     var annualCosts = monthlyCosts * 12;
-    var annualNetCompensation = annualIncome - ((annualIncome * tax) / 100);
+    var annualNetCompensation = annualIncome - ((annualIncome * tax.value) / 100);
     var annualCostsPercentage = ((annualCosts * 100) / annualNetCompensation);
 
     var status = ScoreStatus.MEDIUM;

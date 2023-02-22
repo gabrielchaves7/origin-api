@@ -1,22 +1,22 @@
-import { Controller, Get, Param, ParseFloatPipe, Query } from '@nestjs/common';
-import { FinancialWellnessService } from '../service/financial-wellness.service';
+import { Controller, Get, ParseFloatPipe, Query } from '@nestjs/common';
 import { ScoreResponseDto } from '../dto/score-response.dto';
+import { FinancialWellnessService } from '../service/financial-wellness.service';
 
 @Controller('financial-wellness/api')
 export class FinancialWellnessController {
-  constructor(private financialWellnessService: FinancialWellnessService) {}
+  constructor(private financialWellnessService: FinancialWellnessService) { }
 
-    @Get('score')
-    score(@Query('annualIncome', ParseFloatPipe) annualIncome: number, @Query('monthlyCosts', ParseFloatPipe) monthlyCosts: number): ScoreResponseDto {
-      const scoreResponseDto = new ScoreResponseDto();
-      try {
-        var score =  this.financialWellnessService.get(annualIncome, monthlyCosts);
-        scoreResponseDto.score = score;
-
-        return scoreResponseDto;
-      }catch(error){
-
-      }
-
+  @Get('score')
+  async score(@Query('annualIncome', ParseFloatPipe) annualIncome: number, @Query('monthlyCosts', ParseFloatPipe) monthlyCosts: number): Promise<ScoreResponseDto> {
+    const scoreResponseDto = new ScoreResponseDto();
+    try {
+      var score = await this.financialWellnessService.score(annualIncome, monthlyCosts);
+      scoreResponseDto.score = score;
+ 
+      return scoreResponseDto;
+    } catch (error) {
+      var a = error;
     }
+
+  }
 }
