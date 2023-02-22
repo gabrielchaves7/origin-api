@@ -7,9 +7,9 @@ export class TaxController {
     constructor(private taxService: TaxService) { }
 
     @Put()
-    async updateTax(@Body() taxUpdateRequestDto: TaxUpdateRequestDto): Promise<TaxDto> {
+    async updateTax(@Body() taxDto: TaxDto): Promise<TaxDto> {
         try {
-            var updatedTax = await this.taxService.updateTax(taxUpdateRequestDto.name, taxUpdateRequestDto.value);
+            var updatedTax = await this.taxService.updateTax(taxDto.name, taxDto.value);
 
             return new TaxDto(updatedTax.name, updatedTax.value);
         } catch (error) {
