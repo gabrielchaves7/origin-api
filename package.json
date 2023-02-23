@@ -18,7 +18,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "typeorm-ts-node-commonjs"
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migrations": "typeorm-ts-node-commonjs migration:run -d dist/ormconfig.js"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -27,6 +28,7 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.2.1",
     "@nestjs/typeorm": "^9.0.1",
+    "dotenv": "^16.0.3",
     "pg": "^8.9.0",
     "postgres": "^3.3.3",
     "reflect-metadata": "^0.1.13",
