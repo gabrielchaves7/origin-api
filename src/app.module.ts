@@ -11,6 +11,7 @@ import { TaxService } from './tax/service/tax.service';
 import { Tax } from './tax/entity/tax.entity';
 import { TaxModule } from './tax/tax.module';
 import { ConfigModule } from '@nestjs/config';
+import { AnnualCostsThreshold } from './financial-wellness/entity/annual-costs-threshold.entity';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { ConfigModule } from '@nestjs/config';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       synchronize: true,
-      entities: [Score, Tax],
+      entities: [Score, Tax, AnnualCostsThreshold],
       migrations: [],
     }),
     FinancialWellnessModule,

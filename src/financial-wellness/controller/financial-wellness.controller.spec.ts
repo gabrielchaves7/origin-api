@@ -6,6 +6,7 @@ import { repositoryMockFactory } from '../../test.helpers';
 import { Score, ScoreStatus } from '../entity/score.entity';
 import { FinancialWellnessService } from '../service/financial-wellness.service';
 import { FinancialWellnessController } from './financial-wellness.controller';
+import { AnnualCostsThreshold } from '../entity/annual-costs-threshold.entity';
 
 describe('FinancialWellnessController', () => {
   let financialWellnessController: FinancialWellnessController;
@@ -19,6 +20,10 @@ describe('FinancialWellnessController', () => {
         TaxService,
         {
           provide: getRepositoryToken(Score),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(AnnualCostsThreshold),
           useFactory: repositoryMockFactory,
         },
         { provide: getRepositoryToken(Tax), useFactory: repositoryMockFactory },

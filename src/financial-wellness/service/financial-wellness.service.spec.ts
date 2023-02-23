@@ -1,4 +1,4 @@
-import { Test } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { FinancialWellnessService } from '../service/financial-wellness.service';
 import { Score, ScoreStatus } from '../entity/score.entity';
@@ -6,31 +6,20 @@ import { repositoryMockFactory } from '../../test.helpers';
 import { TaxService } from '../../tax/service/tax.service';
 import { Tax, TaxEnum } from '../../tax/entity/tax.entity';
 import { Repository } from 'typeorm';
+import { AnnualCostsThreshold } from '../entity/annual-costs-threshold.entity';
 
 describe('FinancialWellnessService', () => {
   let financialWellnessService: FinancialWellnessService;
   let taxService: TaxService;
   let getTaxSpy;
-  let mockedScoreRepository: Repository<Tax>;
+  let findAnnualCostsThresholdSpy;
+  let mockedScoreRepository: Repository<Score>;
+  let mockedAnnualCostsThresholdRepository: Repository<AnnualCostsThreshold>;
 
-  const mockGetTax = () => {
-    var tax = new Tax();
-    tax.name = TaxEnum.ANNUAL_TAX;
-    tax.value = 8;
-    getTaxSpy = jest
-      .spyOn(taxService, 'getTax')
-      .mockImplementation(() => Promise.resolve(tax));
-  };
   beforeEach(async () => {
     mockedScoreRepository = repositoryMockFactory();
-    const moduleRef = await Test.createTestingModule({
-      providers: [
-        FinancialWellnessService,
-        TaxService,
-        { provide: getRepositoryToken(Score), useValue: mockedScoreRepository },
-        { provide: getRepositoryToken(Tax), useFactory: repositoryMockFactory },
-      ],
-    }).compile();
+    mockedAnnualCostsThresholdRepository = repositoryMockFactory();
+    const moduleRef = await createTestingModule();
 
     financialWellnessService = moduleRef.get<FinancialWellnessService>(
       FinancialWellnessService,
@@ -38,7 +27,23 @@ describe('FinancialWellnessService', () => {
     taxService = moduleRef.get<TaxService>(TaxService);
 
     mockGetTax();
+    mockFindAnnualCostsThreshold();
   });
+
+  const createTestingModule = async (): Promise<TestingModule> => {
+    return await Test.createTestingModule({
+      providers: [
+        FinancialWellnessService,
+        TaxService,
+        { provide: getRepositoryToken(Score), useValue: mockedScoreRepository },
+        {
+          provide: getRepositoryToken(AnnualCostsThreshold),
+          useValue: mockedAnnualCostsThresholdRepository,
+        },
+        { provide: getRepositoryToken(Tax), useFactory: repositoryMockFactory },
+      ],
+    }).compile();
+  };
 
   const createScore = (
     monthlyCosts: number,
@@ -50,6 +55,46 @@ describe('FinancialWellnessService', () => {
     score.monthlyCosts = monthlyCosts;
     score.status = status;
     return score;
+  };
+
+  const createTax = (name: TaxEnum, value: number): Tax => {
+    var tax = new Tax();
+    tax.name = name;
+    tax.value = value;
+    return tax;
+  };
+
+  const createAnnualCostsThreshold = (
+    status: ScoreStatus,
+    min: string,
+    max: string,
+  ): AnnualCostsThreshold => {
+    var threshold = new AnnualCostsThreshold();
+    threshold.status = status;
+    threshold.max = max;
+    threshold.min = min;
+
+    return threshold;
+  };
+
+  const mockGetTax = () => {
+    getTaxSpy = jest
+      .spyOn(taxService, 'getTax')
+      .mockImplementation(() =>
+        Promise.resolve(createTax(TaxEnum.ANNUAL_TAX, 8)),
+      );
+  };
+
+  const mockFindAnnualCostsThreshold = () => {
+    findAnnualCostsThresholdSpy = jest
+      .spyOn(mockedAnnualCostsThresholdRepository, 'find')
+      .mockImplementation(() =>
+        Promise.resolve([
+          createAnnualCostsThreshold(ScoreStatus.LOW, '75', 'Infinity'),
+          createAnnualCostsThreshold(ScoreStatus.MEDIUM, '25', '75'),
+          createAnnualCostsThreshold(ScoreStatus.HEALTHY, '0', '25'),
+        ]),
+      );
   };
 
   describe('When ANNUAL_TAX is 8%', () => {
@@ -88,6 +133,12 @@ describe('FinancialWellnessService', () => {
       });
       expect(saveSpy).toHaveBeenCalledTimes(1);
       expect(saveSpy).toHaveBeenCalledWith(expectedScore);
+    });
+
+    it('should call annualCostsThreshold.find to find the thresholds', async () => {
+      await financialWellnessService.score(1000, 10);
+      expect(findAnnualCostsThresholdSpy).toHaveBeenCalledTimes(1);
+      expect(findAnnualCostsThresholdSpy).toHaveBeenCalledWith();
     });
   });
 });
