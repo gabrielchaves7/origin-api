@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ScoreController } from './score/controller/score.controller';
 import { ScoreModule } from './score/score.module';
 import { Score } from './score/entity/score.entity';
@@ -33,14 +31,13 @@ import { TaxDataSource } from './tax/datasource/tax.datasource';
     ScoreModule,
     TaxModule,
   ],
-  controllers: [AppController, ScoreController, TaxController],
+  controllers: [ScoreController, TaxController],
   providers: [
-    AppService,
     ScoreService,
     ScoreDataSource,
     AnnualCostsThresholdDataSource,
     TaxService,
-    TaxDataSource
+    TaxDataSource,
   ],
 })
 export class AppModule {}
