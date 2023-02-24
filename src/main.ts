@@ -4,6 +4,11 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
+  app.enableCors({
+    allowedHeaders: ['content-type'],
+    origin: 'http://localhost:8080'
+  });
   const config = new DocumentBuilder()
     .setTitle('Origin API example')
     .setDescription('The cats API description')

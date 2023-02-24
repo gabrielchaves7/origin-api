@@ -53,9 +53,9 @@ describe('FinancialWellnessController', () => {
         .spyOn(financialWellnessService, 'score')
         .mockImplementation(() => Promise.resolve(mockedScore()));
       var result = await financialWellnessController.score(1000, 10);
-      expect(result.score.status).toBe('HEALTHY');
-      expect(result.score.annualIncome).toBe(1000);
-      expect(result.score.monthlyCosts).toBe(10);
+      expect(result.status).toBe('HEALTHY');
+      expect(result.annualIncome).toBe(1000);
+      expect(result.monthlyCosts).toBe(10);
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith(1000, 10);
     });
