@@ -5,6 +5,7 @@ import { ScoreController } from './controller/score.controller';
 import { Score } from './entity/score.entity';
 import { ScoreService } from './service/score.service';
 import { AnnualCostsThreshold } from './entity/annual-costs-threshold.entity';
+import { ScoreDataSource } from './datasource/score.datasource';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { AnnualCostsThreshold } from './entity/annual-costs-threshold.entity';
     TypeOrmModule.forFeature([AnnualCostsThreshold]),
     TaxModule,
   ],
-  providers: [ScoreService],
+  providers: [ScoreService, ScoreDataSource],
   controllers: [ScoreController],
   exports: [TypeOrmModule],
 })

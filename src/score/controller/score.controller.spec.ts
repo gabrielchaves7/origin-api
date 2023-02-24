@@ -7,6 +7,9 @@ import { Score, ScoreStatus } from '../entity/score.entity';
 import { ScoreService } from '../service/score.service';
 import { ScoreController } from './score.controller';
 import { AnnualCostsThreshold } from '../entity/annual-costs-threshold.entity';
+import { AnnualCostsThresholdDataSource } from '../datasource/annual-costs-threshold.datasource';
+import { ScoreDataSource } from '../datasource/score.datasource';
+import { TaxDataSource } from '../../tax/datasource/tax.datasource';
 
 describe('ScoreController', () => {
   let scoreController: ScoreController;
@@ -18,6 +21,9 @@ describe('ScoreController', () => {
       providers: [
         ScoreService,
         TaxService,
+        AnnualCostsThresholdDataSource,
+        ScoreDataSource,
+        TaxDataSource,
         {
           provide: getRepositoryToken(Score),
           useFactory: repositoryMockFactory,
@@ -30,28 +36,21 @@ describe('ScoreController', () => {
       ],
     }).compile();
 
-    scoreService = moduleRef.get<ScoreService>(
-      ScoreService,
-    );
-    scoreController = moduleRef.get<ScoreController>(
-      ScoreController,
-    );
+    scoreService = moduleRef.get<ScoreService>(ScoreService);
+    scoreController = moduleRef.get<ScoreController>(ScoreController);
   });
-
-  const mockedScore = () => {
-    var score = new Score();
-    score.id = 1;
-    score.annualIncome = 1000;
-    score.monthlyCosts = 10;
-    score.status = ScoreStatus.HEALTHY;
-    return score;
-  };
 
   describe('score', () => {
     it('should call scoreService.score', async () => {
-      var spy = jest
-        .spyOn(scoreService, 'get')
-        .mockImplementation(() => Promise.resolve(mockedScore()));
+      var spy = jest.spyOn(scoreService, 'get').mockImplementation(() =>
+        Promise.resolve(
+          new Score({
+            annualIncome: 1000,
+            monthlyCosts: 10,
+            status: ScoreStatus.HEALTHY,
+          }),
+        ),
+      );
       var result = await scoreController.get(1000, 10);
       expect(result.status).toBe('HEALTHY');
       expect(result.annualIncome).toBe(1000);

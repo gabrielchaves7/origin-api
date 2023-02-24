@@ -5,29 +5,33 @@ import { Score, ScoreStatus } from '../entity/score.entity';
 import { repositoryMockFactory } from '../../test.helpers';
 import { TaxService } from '../../tax/service/tax.service';
 import { Tax, TaxEnum } from '../../tax/entity/tax.entity';
-import { Repository } from 'typeorm';
 import { AnnualCostsThreshold } from '../entity/annual-costs-threshold.entity';
+import { ScoreDataSource } from '../datasource/score.datasource';
+import { TaxDataSource } from '../../tax/datasource/tax.datasource';
+import { AnnualCostsThresholdDataSource } from '../datasource/annual-costs-threshold.datasource';
 
 describe('ScoreService', () => {
   let scoreService: ScoreService;
   let taxService: TaxService;
   let getTaxSpy;
   let findAnnualCostsThresholdSpy;
-  let mockedScoreRepository: Repository<Score>;
-  let mockedAnnualCostsThresholdRepository: Repository<AnnualCostsThreshold>;
+  let annualCostsThresholdDataSource: AnnualCostsThresholdDataSource;
+  let scoreDataSource: ScoreDataSource;
 
   beforeEach(async () => {
-    mockedScoreRepository = repositoryMockFactory();
-    mockedAnnualCostsThresholdRepository = repositoryMockFactory();
     const moduleRef = await createTestingModule();
 
-    scoreService = moduleRef.get<ScoreService>(
-      ScoreService,
-    );
+    scoreService = moduleRef.get<ScoreService>(ScoreService);
     taxService = moduleRef.get<TaxService>(TaxService);
+    annualCostsThresholdDataSource =
+      moduleRef.get<AnnualCostsThresholdDataSource>(
+        AnnualCostsThresholdDataSource,
+      );
+    scoreDataSource = moduleRef.get<ScoreDataSource>(ScoreDataSource);
 
-    mockGetTax();
-    mockFindAnnualCostsThreshold();
+    spyGetTax();
+    spyFindAnnualCostsThreshold();
+    spyScoreDataSource();
   });
 
   const createTestingModule = async (): Promise<TestingModule> => {
@@ -35,66 +39,55 @@ describe('ScoreService', () => {
       providers: [
         ScoreService,
         TaxService,
-        { provide: getRepositoryToken(Score), useValue: mockedScoreRepository },
+        ScoreDataSource,
+        TaxDataSource,
+        AnnualCostsThresholdDataSource,
+        { provide: getRepositoryToken(Score), useValue: repositoryMockFactory },
         {
           provide: getRepositoryToken(AnnualCostsThreshold),
-          useValue: mockedAnnualCostsThresholdRepository,
+          useValue: repositoryMockFactory,
         },
         { provide: getRepositoryToken(Tax), useFactory: repositoryMockFactory },
       ],
     }).compile();
   };
 
-  const createScore = (
-    monthlyCosts: number,
-    annualIncome: number,
-    status: ScoreStatus,
-  ): Score => {
-    var score = new Score();
-    score.annualIncome = annualIncome;
-    score.monthlyCosts = monthlyCosts;
-    score.status = status;
-    return score;
-  };
-
-  const createTax = (name: TaxEnum, value: number): Tax => {
-    var tax = new Tax();
-    tax.name = name;
-    tax.value = value;
-    return tax;
-  };
-
-  const createAnnualCostsThreshold = (
-    status: ScoreStatus,
-    min: string,
-    max: string,
-  ): AnnualCostsThreshold => {
-    var threshold = new AnnualCostsThreshold();
-    threshold.status = status;
-    threshold.max = max;
-    threshold.min = min;
-
-    return threshold;
-  };
-
-  const mockGetTax = () => {
+  const spyGetTax = () => {
     getTaxSpy = jest
-      .spyOn(taxService, 'getTax')
+      .spyOn(taxService, 'findOne')
       .mockImplementation(() =>
-        Promise.resolve(createTax(TaxEnum.ANNUAL_TAX, 8)),
+        Promise.resolve(new Tax({ name: TaxEnum.ANNUAL_TAX, value: 8 })),
       );
   };
 
-  const mockFindAnnualCostsThreshold = () => {
+  const spyFindAnnualCostsThreshold = () => {
     findAnnualCostsThresholdSpy = jest
-      .spyOn(mockedAnnualCostsThresholdRepository, 'find')
+      .spyOn(annualCostsThresholdDataSource, 'find')
       .mockImplementation(() =>
         Promise.resolve([
-          createAnnualCostsThreshold(ScoreStatus.LOW, '75', 'Infinity'),
-          createAnnualCostsThreshold(ScoreStatus.MEDIUM, '25', '75'),
-          createAnnualCostsThreshold(ScoreStatus.HEALTHY, '0', '25'),
+          new AnnualCostsThreshold({
+            status: ScoreStatus.LOW,
+            min: '75',
+            max: 'Infinity',
+          }),
+          new AnnualCostsThreshold({
+            status: ScoreStatus.MEDIUM,
+            min: '25',
+            max: '75',
+          }),
+          new AnnualCostsThreshold({
+            status: ScoreStatus.HEALTHY,
+            min: '0',
+            max: '25',
+          }),
         ]),
       );
+  };
+
+  const spyScoreDataSource = () => {
+    jest
+      .spyOn(scoreDataSource, 'save')
+      .mockImplementationOnce(() => Promise.resolve());
   };
 
   describe('When ANNUAL_TAX is 8%', () => {
@@ -120,17 +113,14 @@ describe('ScoreService', () => {
     });
 
     it('should call scoreRepository to save the calculated score', async () => {
-      var expectedScore = createScore(10, 1000, ScoreStatus.HEALTHY);
-      var createSpy = jest.spyOn(mockedScoreRepository, 'create');
-      var saveSpy = jest.spyOn(mockedScoreRepository, 'save');
-
-      await scoreService.get(1000, 10);
-      expect(createSpy).toHaveBeenCalledTimes(1);
-      expect(createSpy).toHaveBeenCalledWith({
-        monthlyCosts: 10,
+      var expectedScore = new Score({
         annualIncome: 1000,
+        monthlyCosts: 10,
         status: ScoreStatus.HEALTHY,
       });
+      var saveSpy = jest.spyOn(scoreDataSource, 'save');
+
+      await scoreService.get(1000, 10);
       expect(saveSpy).toHaveBeenCalledTimes(1);
       expect(saveSpy).toHaveBeenCalledWith(expectedScore);
     });

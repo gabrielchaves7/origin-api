@@ -14,4 +14,11 @@ export class AnnualCostsThreshold {
 
   @Column()
   max: string;
+
+
+  constructor({status, min, max}) {
+    this.status = status;
+    this.min = min;
+    this.max = max;
+  }
 }

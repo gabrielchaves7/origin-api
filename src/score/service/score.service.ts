@@ -2,50 +2,79 @@ import { Injectable, Dependencies, Inject } from '@nestjs/common';
 import { getRepositoryToken, InjectRepository } from '@nestjs/typeorm';
 import { Tax, TaxEnum } from '../../tax/entity/tax.entity';
 import { TaxService } from '../../tax/service/tax.service';
-import { Repository } from 'typeorm';
 import { Score, ScoreStatus } from '../entity/score.entity';
 import { AnnualCostsThreshold } from '../entity/annual-costs-threshold.entity';
+import { ScoreDataSource } from '../datasource/score.datasource';
+import { AnnualCostsThresholdDataSource } from '../datasource/annual-costs-threshold.datasource';
 
 @Injectable()
 @Dependencies(getRepositoryToken(Score))
 export class ScoreService {
-  scoreRepository: Repository<Score>;
-  annualCostsThresholdRepository: Repository<AnnualCostsThreshold>;
+  annualCostsThresholdDataSource: AnnualCostsThresholdDataSource;
   taxService: TaxService;
+  scoreDataSource: ScoreDataSource;
 
   constructor(
-    @InjectRepository(Score) scoreRepository: Repository<Score>,
-    @InjectRepository(AnnualCostsThreshold)
-    annualCostsThresholdRepository: Repository<AnnualCostsThreshold>,
+    @Inject(AnnualCostsThresholdDataSource)
+    annualCostsThresholdDataSource: AnnualCostsThresholdDataSource,
     @Inject(TaxService) taxService: TaxService,
+    @Inject(ScoreDataSource) scoreDataSource: ScoreDataSource,
   ) {
-    this.scoreRepository = scoreRepository;
     this.taxService = taxService;
-    this.annualCostsThresholdRepository = annualCostsThresholdRepository;
+    this.annualCostsThresholdDataSource = annualCostsThresholdDataSource;
+    this.scoreDataSource = scoreDataSource;
   }
 
   async get(annualIncome: number, monthlyCosts: number): Promise<Score> {
-    const tax: Tax = await this.taxService.getTax(TaxEnum.ANNUAL_TAX);
-    const thresholds = await this.annualCostsThresholdRepository.find();
+    const tax: Tax = await this.taxService.findOne(TaxEnum.ANNUAL_TAX);
+    const thresholds = await this.annualCostsThresholdDataSource.find();
+    var annualCostsPercentage = this._getAnnualCostsPercentage(
+      annualIncome,
+      monthlyCosts,
+      tax,
+    );
+
+    var annualCostsThreshold: AnnualCostsThreshold =
+      this._getAnnualCostsThreshold(thresholds, annualCostsPercentage);
+
+    return await this._saveNewScore(
+      annualIncome,
+      monthlyCosts,
+      annualCostsThreshold.status,
+    );
+  }
+
+  async _saveNewScore(
+    annualIncome: number,
+    monthlyCosts: number,
+    status: ScoreStatus,
+  ) {
+    var newScore = new Score({ annualIncome, monthlyCosts, status });
+    await this.scoreDataSource.save(newScore);
+
+    return newScore;
+  }
+
+  _getAnnualCostsPercentage(
+    annualIncome: number,
+    monthlyCosts: number,
+    tax: Tax,
+  ): number {
     var annualCosts = monthlyCosts * 12;
     var annualNetCompensation = annualIncome - (annualIncome * tax.value) / 100;
     var annualCostsPercentage = (annualCosts * 100) / annualNetCompensation;
 
-    var annualCostsThreshold: AnnualCostsThreshold = thresholds.find(
+    return annualCostsPercentage;
+  }
+
+  _getAnnualCostsThreshold(
+    thresholds: AnnualCostsThreshold[],
+    annualCostsPercentage: number,
+  ): AnnualCostsThreshold {
+    return thresholds.find(
       (threshold) =>
         annualCostsPercentage <= +threshold.max &&
         annualCostsPercentage > +threshold.min,
     );
-
-    var newScore = this.scoreRepository.create({
-      monthlyCosts,
-      annualIncome,
-      status: annualCostsThreshold.status,
-    });
-    this.scoreRepository.save(newScore);
-
-    return newScore;
   }
 }
-
-
