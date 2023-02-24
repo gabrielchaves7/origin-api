@@ -12,6 +12,9 @@ import { Tax } from './tax/entity/tax.entity';
 import { TaxModule } from './tax/tax.module';
 import { ConfigModule } from '@nestjs/config';
 import { AnnualCostsThreshold } from './score/entity/annual-costs-threshold.entity';
+import { ScoreDataSource } from './score/datasource/score.datasource';
+import { AnnualCostsThresholdDataSource } from './score/datasource/annual-costs-threshold.datasource';
+import { TaxDataSource } from './tax/datasource/tax.datasource';
 
 @Module({
   imports: [
@@ -31,6 +34,13 @@ import { AnnualCostsThreshold } from './score/entity/annual-costs-threshold.enti
     TaxModule,
   ],
   controllers: [AppController, ScoreController, TaxController],
-  providers: [AppService, ScoreService, TaxService],
+  providers: [
+    AppService,
+    ScoreService,
+    ScoreDataSource,
+    AnnualCostsThresholdDataSource,
+    TaxService,
+    TaxDataSource
+  ],
 })
 export class AppModule {}

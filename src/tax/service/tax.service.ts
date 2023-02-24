@@ -1,6 +1,5 @@
 import { Injectable, Dependencies, Inject } from '@nestjs/common';
-import { getRepositoryToken, InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { Tax, TaxEnum } from '../entity/tax.entity';
 import { TaxDataSource } from '../datasource/tax.datasource';
 

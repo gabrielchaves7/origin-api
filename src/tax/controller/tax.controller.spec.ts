@@ -28,17 +28,13 @@ describe('TaxController', () => {
     repository = moduleRef.get(getRepositoryToken(Tax));
   });
 
-  const mockedTax = () => {
-    var tax = new Tax();
-    tax.name = TaxEnum.ANNUAL_TAX;
-    tax.value = 10;
-    return tax;
-  };
   describe('Updating tax', () => {
     it('should call taxService.put', async () => {
       var spy = jest
         .spyOn(taxService, 'put')
-        .mockImplementation(() => Promise.resolve(mockedTax()));
+        .mockImplementation(() =>
+          Promise.resolve(new Tax({ name: TaxEnum.ANNUAL_TAX, value: 10 })),
+        );
       var result = await taxController.put(new TaxDto('ANNUAL_TAX', 10));
       expect(result.name).toBe('ANNUAL_TAX');
       expect(result.value).toBe(10);

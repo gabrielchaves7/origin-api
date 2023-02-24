@@ -15,4 +15,9 @@ export class Tax {
     default: TaxEnum.ANNUAL_TAX,
   })
   name: TaxEnum;
+
+  constructor({value, name}) {
+    this.value = value;
+    this.name = name;
+  }
 }

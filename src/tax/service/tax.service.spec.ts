@@ -9,7 +9,7 @@ import { TaxDataSource } from '../datasource/tax.datasource';
 describe('TaxService', () => {
   let taxService: TaxService;
   let mockedRepository: Repository<Tax>;
-  let taxDataSource:TaxDataSource;
+  let taxDataSource: TaxDataSource;
 
   beforeEach(async () => {
     mockedRepository = repositoryMockFactory();
@@ -24,19 +24,13 @@ describe('TaxService', () => {
     taxService = moduleRef.get<TaxService>(TaxService);
     taxDataSource = moduleRef.get<TaxDataSource>(TaxDataSource);
   });
-
-  const createTax = (name: TaxEnum, value: number): Tax => {
-    var tax = new Tax();
-    tax.name = name;
-    tax.value = value;
-    return tax;
-  };
-
   describe('update tax', () => {
     it('should call taxDataSource.put', async () => {
       var spy = jest
-      .spyOn(taxDataSource, 'put')
-      .mockImplementation(() => Promise.resolve(createTax(TaxEnum.ANNUAL_TAX, 8)));
+        .spyOn(taxDataSource, 'put')
+        .mockImplementation(() =>
+          Promise.resolve(new Tax({ name: TaxEnum.ANNUAL_TAX, value: 8 })),
+        );
 
       await taxService.put('ANNUAL_TAX', 10);
 
@@ -48,12 +42,14 @@ describe('TaxService', () => {
   describe('get tax', () => {
     it('should call taxRepository.findOneBy', async () => {
       var spy = jest
-      .spyOn(taxDataSource, 'findOne')
-      .mockImplementation(() => Promise.resolve(createTax(TaxEnum.ANNUAL_TAX, 8)));
+        .spyOn(taxDataSource, 'findOne')
+        .mockImplementation(() =>
+          Promise.resolve(new Tax({ name: TaxEnum.ANNUAL_TAX, value: 8 })),
+        );
       await taxService.findOne(TaxEnum.ANNUAL_TAX);
 
       expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith("ANNUAL_TAX");
+      expect(spy).toHaveBeenCalledWith('ANNUAL_TAX');
     });
   });
 });
