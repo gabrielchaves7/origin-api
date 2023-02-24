@@ -4,21 +4,25 @@ import { repositoryMockFactory } from '../../test.helpers';
 import { Repository } from 'typeorm';
 import { TaxService } from './tax.service';
 import { Tax, TaxEnum } from '../entity/tax.entity';
+import { TaxDataSource } from '../datasource/tax.datasource';
 
 describe('TaxService', () => {
   let taxService: TaxService;
   let mockedRepository: Repository<Tax>;
+  let taxDataSource:TaxDataSource;
 
   beforeEach(async () => {
     mockedRepository = repositoryMockFactory();
     const moduleRef = await Test.createTestingModule({
       providers: [
         TaxService,
+        TaxDataSource,
         { provide: getRepositoryToken(Tax), useValue: mockedRepository },
       ],
     }).compile();
 
     taxService = moduleRef.get<TaxService>(TaxService);
+    taxDataSource = moduleRef.get<TaxDataSource>(TaxDataSource);
   });
 
   const createTax = (name: TaxEnum, value: number): Tax => {
@@ -29,29 +33,27 @@ describe('TaxService', () => {
   };
 
   describe('update tax', () => {
-    it('should call taxRepository.create and taxRepository.save', async () => {
-      var expectedTax = createTax(TaxEnum.ANNUAL_TAX, 10);
-      var createSpy = jest.spyOn(mockedRepository, 'create');
-      var saveSpy = jest.spyOn(mockedRepository, 'save');
-      await taxService.updateTax('ANNUAL_TAX', 10);
+    it('should call taxDataSource.put', async () => {
+      var spy = jest
+      .spyOn(taxDataSource, 'put')
+      .mockImplementation(() => Promise.resolve(createTax(TaxEnum.ANNUAL_TAX, 8)));
 
-      expect(createSpy).toHaveBeenCalledTimes(1);
-      expect(createSpy).toHaveBeenCalledWith({
-        name: TaxEnum.ANNUAL_TAX,
-        value: 10,
-      });
-      expect(saveSpy).toHaveBeenCalledTimes(1);
-      expect(saveSpy).toHaveBeenCalledWith(expectedTax);
+      await taxService.put('ANNUAL_TAX', 10);
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(TaxEnum.ANNUAL_TAX, 10);
     });
   });
 
   describe('get tax', () => {
     it('should call taxRepository.findOneBy', async () => {
-      var findOneBySpy = jest.spyOn(mockedRepository, 'findOneBy');
-      await taxService.getTax(TaxEnum.ANNUAL_TAX);
+      var spy = jest
+      .spyOn(taxDataSource, 'findOne')
+      .mockImplementation(() => Promise.resolve(createTax(TaxEnum.ANNUAL_TAX, 8)));
+      await taxService.findOne(TaxEnum.ANNUAL_TAX);
 
-      expect(findOneBySpy).toHaveBeenCalledTimes(1);
-      expect(findOneBySpy).toHaveBeenCalledWith({ name: TaxEnum.ANNUAL_TAX });
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith("ANNUAL_TAX");
     });
   });
 });

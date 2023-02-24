@@ -6,6 +6,7 @@ import { TaxDto } from '../dto/tax.dto';
 import { Tax, TaxEnum } from '../entity/tax.entity';
 import { TaxService } from '../service/tax.service';
 import { TaxController } from './tax.controller';
+import { TaxDataSource } from '../datasource/tax.datasource';
 
 describe('TaxController', () => {
   let taxController: TaxController;
@@ -17,6 +18,7 @@ describe('TaxController', () => {
       controllers: [TaxController],
       providers: [
         TaxService,
+        TaxDataSource,
         { provide: getRepositoryToken(Tax), useFactory: repositoryMockFactory },
       ],
     }).compile();
@@ -33,11 +35,11 @@ describe('TaxController', () => {
     return tax;
   };
   describe('Updating tax', () => {
-    it('should call taxService.updateTax', async () => {
+    it('should call taxService.put', async () => {
       var spy = jest
-        .spyOn(taxService, 'updateTax')
+        .spyOn(taxService, 'put')
         .mockImplementation(() => Promise.resolve(mockedTax()));
-      var result = await taxController.updateTax(new TaxDto('ANNUAL_TAX', 10));
+      var result = await taxController.put(new TaxDto('ANNUAL_TAX', 10));
       expect(result.name).toBe('ANNUAL_TAX');
       expect(result.value).toBe(10);
       expect(spy).toHaveBeenCalledTimes(1);

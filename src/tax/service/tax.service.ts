@@ -1,28 +1,23 @@
-import { Injectable, Dependencies } from '@nestjs/common';
+import { Injectable, Dependencies, Inject } from '@nestjs/common';
 import { getRepositoryToken, InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Tax, TaxEnum } from '../entity/tax.entity';
+import { TaxDataSource } from '../datasource/tax.datasource';
 
 @Injectable()
 @Dependencies(getRepositoryToken(Tax))
 export class TaxService {
-  taxRepository: Repository<Tax>;
+  taxDataSource: TaxDataSource;
 
-  constructor(@InjectRepository(Tax) taxRepository: Repository<Tax>) {
-    this.taxRepository = taxRepository;
+  constructor(@Inject(TaxDataSource) taxDataSource: TaxDataSource) {
+    this.taxDataSource = taxDataSource;
   }
 
-  async updateTax(name: string, value: number): Promise<Tax> {
-    var updatedTax = this.taxRepository.create({
-      name: name as TaxEnum,
-      value,
-    });
-    await this.taxRepository.save(updatedTax);
-
-    return updatedTax;
+  async put(name: string, value: number): Promise<Tax> {
+    return await this.taxDataSource.put(name, value);
   }
 
-  async getTax(name: TaxEnum): Promise<Tax> {
-    return await this.taxRepository.findOneBy({ name });
+  async findOne(name: TaxEnum): Promise<Tax> {
+    return await this.taxDataSource.findOne(name);
   }
 }
