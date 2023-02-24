@@ -2,6 +2,7 @@ import { Injectable, Dependencies, Inject } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Tax, TaxEnum } from '../entity/tax.entity';
 import { TaxDataSource } from '../datasource/tax.datasource';
+import { TaxDto } from '../dto/tax.dto';
 
 @Injectable()
 @Dependencies(getRepositoryToken(Tax))
@@ -12,8 +13,8 @@ export class TaxService {
     this.taxDataSource = taxDataSource;
   }
 
-  async put(name: string, value: number): Promise<Tax> {
-    return await this.taxDataSource.put(name, value);
+  async put(taxDto:TaxDto): Promise<Tax> {
+    return await this.taxDataSource.put(taxDto);
   }
 
   async findOne(name: TaxEnum): Promise<Tax> {

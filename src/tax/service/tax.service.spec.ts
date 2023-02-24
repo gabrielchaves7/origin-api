@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { TaxService } from './tax.service';
 import { Tax, TaxEnum } from '../entity/tax.entity';
 import { TaxDataSource } from '../datasource/tax.datasource';
+import { TaxDto } from '../dto/tax.dto';
 
 describe('TaxService', () => {
   let taxService: TaxService;
@@ -24,18 +25,19 @@ describe('TaxService', () => {
     taxService = moduleRef.get<TaxService>(TaxService);
     taxDataSource = moduleRef.get<TaxDataSource>(TaxDataSource);
   });
+
   describe('update tax', () => {
     it('should call taxDataSource.put', async () => {
       var spy = jest
         .spyOn(taxDataSource, 'put')
         .mockImplementation(() =>
-          Promise.resolve(new Tax({ name: TaxEnum.ANNUAL_TAX, value: 8 })),
+          Promise.resolve(new TaxDto({ name: TaxEnum.ANNUAL_TAX, value: 10 })),
         );
 
-      await taxService.put('ANNUAL_TAX', 10);
+      await taxService.put(new TaxDto({ name: TaxEnum.ANNUAL_TAX, value: 10 }));
 
       expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith(TaxEnum.ANNUAL_TAX, 10);
+      expect(spy).toHaveBeenCalledWith({ name: TaxEnum.ANNUAL_TAX, value: 10 });
     });
   });
 
@@ -44,7 +46,7 @@ describe('TaxService', () => {
       var spy = jest
         .spyOn(taxDataSource, 'findOne')
         .mockImplementation(() =>
-          Promise.resolve(new Tax({ name: TaxEnum.ANNUAL_TAX, value: 8 })),
+          Promise.resolve(new TaxDto({ name: TaxEnum.ANNUAL_TAX, value: 8 })),
         );
       await taxService.findOne(TaxEnum.ANNUAL_TAX);
 

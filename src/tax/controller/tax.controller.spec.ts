@@ -33,9 +33,11 @@ describe('TaxController', () => {
       var spy = jest
         .spyOn(taxService, 'put')
         .mockImplementation(() =>
-          Promise.resolve(new Tax({ name: TaxEnum.ANNUAL_TAX, value: 10 })),
+          Promise.resolve(new TaxDto({ name: TaxEnum.ANNUAL_TAX, value: 10 })),
         );
-      var result = await taxController.put(new TaxDto('ANNUAL_TAX', 10));
+      var result = await taxController.put(
+        new TaxDto({ name: TaxEnum.ANNUAL_TAX, value: 10 }),
+      );
       expect(result.name).toBe('ANNUAL_TAX');
       expect(result.value).toBe(10);
       expect(spy).toHaveBeenCalledTimes(1);
