@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 import { ScoreStatus } from './score.entity';
 
 @Entity()
@@ -14,11 +14,4 @@ export class AnnualCostsThreshold {
 
   @Column()
   max: string;
-
-
-  constructor({status, min, max}) {
-    this.status = status;
-    this.min = min;
-    this.max = max;
-  }
 }

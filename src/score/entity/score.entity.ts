@@ -23,10 +23,4 @@ export class Score {
     default: ScoreStatus.LOW,
   })
   status: ScoreStatus;
-
-  constructor({annualIncome, monthlyCosts, status}) {
-    this.annualIncome = annualIncome;
-    this.monthlyCosts = monthlyCosts;
-    this.status = status;
-  }
 }

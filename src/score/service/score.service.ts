@@ -1,5 +1,5 @@
 import { Injectable, Dependencies, Inject } from '@nestjs/common';
-import { getRepositoryToken, InjectRepository } from '@nestjs/typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { Tax, TaxEnum } from '../../tax/entity/tax.entity';
 import { TaxService } from '../../tax/service/tax.service';
 import { Score, ScoreStatus } from '../entity/score.entity';
@@ -49,7 +49,10 @@ export class ScoreService {
     monthlyCosts: number,
     status: ScoreStatus,
   ) {
-    var newScore = new Score({ annualIncome, monthlyCosts, status });
+    var newScore = new Score();
+    newScore.annualIncome = annualIncome;
+    newScore.monthlyCosts = monthlyCosts;
+    newScore.status = status
     await this.scoreDataSource.save(newScore);
 
     return newScore;

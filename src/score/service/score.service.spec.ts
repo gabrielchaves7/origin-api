@@ -9,6 +9,7 @@ import { AnnualCostsThreshold } from '../entity/annual-costs-threshold.entity';
 import { ScoreDataSource } from '../datasource/score.datasource';
 import { TaxDataSource } from '../../tax/datasource/tax.datasource';
 import { AnnualCostsThresholdDataSource } from '../datasource/annual-costs-threshold.datasource';
+import { TaxDto } from '../../tax/dto/tax.dto';
 
 describe('ScoreService', () => {
   let scoreService: ScoreService;
@@ -56,8 +57,28 @@ describe('ScoreService', () => {
     getTaxSpy = jest
       .spyOn(taxService, 'findOne')
       .mockImplementation(() =>
-        Promise.resolve(new Tax({ name: TaxEnum.ANNUAL_TAX, value: 8 })),
+        Promise.resolve(new TaxDto({ name: TaxEnum.ANNUAL_TAX, value: 8 })),
       );
+  };
+
+  const _createScore = ({ annualIncome, monthlyCosts, status }): Score => {
+    var score = new Score();
+    score.status = status;
+    score.annualIncome = annualIncome;
+    score.monthlyCosts = monthlyCosts;
+    return score;
+  };
+
+  const _createAnnualCostsThreshold = ({
+    status,
+    min,
+    max,
+  }): AnnualCostsThreshold => {
+    var annualCostsThreshold = new AnnualCostsThreshold();
+    annualCostsThreshold.status = status;
+    annualCostsThreshold.min = min;
+    annualCostsThreshold.max = max;
+    return annualCostsThreshold;
   };
 
   const spyFindAnnualCostsThreshold = () => {
@@ -65,17 +86,17 @@ describe('ScoreService', () => {
       .spyOn(annualCostsThresholdDataSource, 'find')
       .mockImplementation(() =>
         Promise.resolve([
-          new AnnualCostsThreshold({
+          _createAnnualCostsThreshold({
             status: ScoreStatus.LOW,
             min: '75',
             max: 'Infinity',
           }),
-          new AnnualCostsThreshold({
+          _createAnnualCostsThreshold({
             status: ScoreStatus.MEDIUM,
             min: '25',
             max: '75',
           }),
-          new AnnualCostsThreshold({
+          _createAnnualCostsThreshold({
             status: ScoreStatus.HEALTHY,
             min: '0',
             max: '25',
@@ -113,7 +134,7 @@ describe('ScoreService', () => {
     });
 
     it('should call scoreRepository to save the calculated score', async () => {
-      var expectedScore = new Score({
+      var expectedScore = _createScore({
         annualIncome: 1000,
         monthlyCosts: 10,
         status: ScoreStatus.HEALTHY,
