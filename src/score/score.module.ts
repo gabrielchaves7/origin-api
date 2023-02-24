@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaxModule } from '../tax/tax.module';
-import { FinancialWellnessController } from './controller/financial-wellness.controller';
+import { ScoreController } from './controller/score.controller';
 import { Score } from './entity/score.entity';
-import { FinancialWellnessService } from './service/financial-wellness.service';
+import { ScoreService } from './service/score.service';
 import { AnnualCostsThreshold } from './entity/annual-costs-threshold.entity';
 
 @Module({
@@ -12,8 +12,8 @@ import { AnnualCostsThreshold } from './entity/annual-costs-threshold.entity';
     TypeOrmModule.forFeature([AnnualCostsThreshold]),
     TaxModule,
   ],
-  providers: [FinancialWellnessService],
-  controllers: [FinancialWellnessController],
+  providers: [ScoreService],
+  controllers: [ScoreController],
   exports: [TypeOrmModule],
 })
-export class FinancialWellnessModule {}
+export class ScoreModule {}

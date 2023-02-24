@@ -1,18 +1,18 @@
 import { Controller, Get, ParseFloatPipe, Query } from '@nestjs/common';
-import { FinancialWellnessService } from '../service/financial-wellness.service';
+import { ScoreService } from '../service/score.service';
 import { Score } from '../entity/score.entity';
 
-@Controller('financial-wellness')
-export class FinancialWellnessController {
-  constructor(private financialWellnessService: FinancialWellnessService) {}
+@Controller('score')
+export class ScoreController {
+  constructor(private scoreService: ScoreService) {}
 
-  @Get('score')
-  async score(
+  @Get('')
+  async get(
     @Query('annualIncome', ParseFloatPipe) annualIncome: number,
     @Query('monthlyCosts', ParseFloatPipe) monthlyCosts: number,
   ): Promise<Score> {
     try {
-      return await this.financialWellnessService.score(
+      return await this.scoreService.get(
         annualIncome,
         monthlyCosts,
       );

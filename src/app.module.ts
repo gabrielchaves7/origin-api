@@ -2,16 +2,16 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { FinancialWellnessController } from './financial-wellness/controller/financial-wellness.controller';
-import { FinancialWellnessModule } from './financial-wellness/financial-wellness.module';
-import { Score } from './financial-wellness/entity/score.entity';
-import { FinancialWellnessService } from './financial-wellness/service/financial-wellness.service';
+import { ScoreController } from './score/controller/score.controller';
+import { ScoreModule } from './score/score.module';
+import { Score } from './score/entity/score.entity';
+import { ScoreService } from './score/service/score.service';
 import { TaxController } from './tax/controller/tax.controller';
 import { TaxService } from './tax/service/tax.service';
 import { Tax } from './tax/entity/tax.entity';
 import { TaxModule } from './tax/tax.module';
 import { ConfigModule } from '@nestjs/config';
-import { AnnualCostsThreshold } from './financial-wellness/entity/annual-costs-threshold.entity';
+import { AnnualCostsThreshold } from './score/entity/annual-costs-threshold.entity';
 
 @Module({
   imports: [
@@ -27,10 +27,10 @@ import { AnnualCostsThreshold } from './financial-wellness/entity/annual-costs-t
       entities: [Score, Tax, AnnualCostsThreshold],
       migrations: [],
     }),
-    FinancialWellnessModule,
+    ScoreModule,
     TaxModule,
   ],
-  controllers: [AppController, FinancialWellnessController, TaxController],
-  providers: [AppService, FinancialWellnessService, TaxService],
+  controllers: [AppController, ScoreController, TaxController],
+  providers: [AppService, ScoreService, TaxService],
 })
 export class AppModule {}

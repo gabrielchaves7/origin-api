@@ -8,7 +8,7 @@ import { AnnualCostsThreshold } from '../entity/annual-costs-threshold.entity';
 
 @Injectable()
 @Dependencies(getRepositoryToken(Score))
-export class FinancialWellnessService {
+export class ScoreService {
   scoreRepository: Repository<Score>;
   annualCostsThresholdRepository: Repository<AnnualCostsThreshold>;
   taxService: TaxService;
@@ -24,7 +24,7 @@ export class FinancialWellnessService {
     this.annualCostsThresholdRepository = annualCostsThresholdRepository;
   }
 
-  async score(annualIncome: number, monthlyCosts: number): Promise<Score> {
+  async get(annualIncome: number, monthlyCosts: number): Promise<Score> {
     const tax: Tax = await this.taxService.getTax(TaxEnum.ANNUAL_TAX);
     const thresholds = await this.annualCostsThresholdRepository.find();
     var annualCosts = monthlyCosts * 12;

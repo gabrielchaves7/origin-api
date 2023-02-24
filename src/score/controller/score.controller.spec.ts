@@ -4,19 +4,19 @@ import { TaxService } from '../../tax/service/tax.service';
 import { Tax } from '../../tax/entity/tax.entity';
 import { repositoryMockFactory } from '../../test.helpers';
 import { Score, ScoreStatus } from '../entity/score.entity';
-import { FinancialWellnessService } from '../service/financial-wellness.service';
-import { FinancialWellnessController } from './financial-wellness.controller';
+import { ScoreService } from '../service/score.service';
+import { ScoreController } from './score.controller';
 import { AnnualCostsThreshold } from '../entity/annual-costs-threshold.entity';
 
-describe('FinancialWellnessController', () => {
-  let financialWellnessController: FinancialWellnessController;
-  let financialWellnessService: FinancialWellnessService;
+describe('ScoreController', () => {
+  let scoreController: ScoreController;
+  let scoreService: ScoreService;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
-      controllers: [FinancialWellnessController],
+      controllers: [ScoreController],
       providers: [
-        FinancialWellnessService,
+        ScoreService,
         TaxService,
         {
           provide: getRepositoryToken(Score),
@@ -30,11 +30,11 @@ describe('FinancialWellnessController', () => {
       ],
     }).compile();
 
-    financialWellnessService = moduleRef.get<FinancialWellnessService>(
-      FinancialWellnessService,
+    scoreService = moduleRef.get<ScoreService>(
+      ScoreService,
     );
-    financialWellnessController = moduleRef.get<FinancialWellnessController>(
-      FinancialWellnessController,
+    scoreController = moduleRef.get<ScoreController>(
+      ScoreController,
     );
   });
 
@@ -48,11 +48,11 @@ describe('FinancialWellnessController', () => {
   };
 
   describe('score', () => {
-    it('should call financialWellnessService.score', async () => {
+    it('should call scoreService.score', async () => {
       var spy = jest
-        .spyOn(financialWellnessService, 'score')
+        .spyOn(scoreService, 'get')
         .mockImplementation(() => Promise.resolve(mockedScore()));
-      var result = await financialWellnessController.score(1000, 10);
+      var result = await scoreController.get(1000, 10);
       expect(result.status).toBe('HEALTHY');
       expect(result.annualIncome).toBe(1000);
       expect(result.monthlyCosts).toBe(10);
