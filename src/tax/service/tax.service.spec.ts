@@ -28,7 +28,7 @@ describe('TaxService', () => {
 
   describe('update tax', () => {
     it('should call taxDataSource.put', async () => {
-      var spy = jest
+      const spy = jest
         .spyOn(taxDataSource, 'put')
         .mockImplementation(() =>
           Promise.resolve(new TaxDto({ name: TaxEnum.ANNUAL_TAX, value: 10 })),
@@ -43,7 +43,7 @@ describe('TaxService', () => {
 
   describe('get tax', () => {
     it('should call taxRepository.findOneBy', async () => {
-      var spy = jest
+      const spy = jest
         .spyOn(taxDataSource, 'findOne')
         .mockImplementation(() =>
           Promise.resolve(new TaxDto({ name: TaxEnum.ANNUAL_TAX, value: 8 })),

@@ -1,6 +1,5 @@
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { repositoryMockFactory } from '../../test.helpers';
 import { TaxDto } from '../dto/tax.dto';
 import { Tax, TaxEnum } from '../entity/tax.entity';
@@ -11,7 +10,6 @@ import { TaxDataSource } from '../datasource/tax.datasource';
 describe('TaxController', () => {
   let taxController: TaxController;
   let taxService: TaxService;
-  let repository: Repository<Tax>;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -25,17 +23,16 @@ describe('TaxController', () => {
 
     taxService = moduleRef.get<TaxService>(TaxService);
     taxController = moduleRef.get<TaxController>(TaxController);
-    repository = moduleRef.get(getRepositoryToken(Tax));
   });
 
   describe('Updating tax', () => {
     it('should call taxService.put', async () => {
-      var spy = jest
+      const spy = jest
         .spyOn(taxService, 'put')
         .mockImplementation(() =>
           Promise.resolve(new TaxDto({ name: TaxEnum.ANNUAL_TAX, value: 10 })),
         );
-      var result = await taxController.put(
+      const result = await taxController.put(
         new TaxDto({ name: TaxEnum.ANNUAL_TAX, value: 10 }),
       );
       expect(result.name).toBe('ANNUAL_TAX');

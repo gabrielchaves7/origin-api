@@ -26,7 +26,7 @@ import { TaxDataSource } from './tax/datasource/tax.datasource';
       database: process.env.DB_NAME,
       synchronize: true,
       entities: [Score, Tax, AnnualCostsThreshold],
-      
+
       migrations: [],
     }),
     ScoreModule,

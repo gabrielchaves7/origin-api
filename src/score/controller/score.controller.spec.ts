@@ -41,7 +41,7 @@ describe('ScoreController', () => {
   });
 
   const _createScore = ({ annualIncome, monthlyCosts, status }): Score => {
-    var score = new Score();
+    const score = new Score();
     score.status = status;
     score.annualIncome = annualIncome;
     score.monthlyCosts = monthlyCosts;
@@ -50,7 +50,7 @@ describe('ScoreController', () => {
 
   describe('score', () => {
     it('should call scoreService.score', async () => {
-      var spy = jest.spyOn(scoreService, 'get').mockImplementation(() =>
+      const spy = jest.spyOn(scoreService, 'get').mockImplementation(() =>
         Promise.resolve(
           _createScore({
             annualIncome: 1000,
@@ -59,7 +59,7 @@ describe('ScoreController', () => {
           }),
         ),
       );
-      var result = await scoreController.get(1000, 10);
+      const result = await scoreController.get(1000, 10);
       expect(result.status).toBe('HEALTHY');
       expect(result.annualIncome).toBe(1000);
       expect(result.monthlyCosts).toBe(10);

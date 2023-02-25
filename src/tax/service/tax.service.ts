@@ -13,7 +13,7 @@ export class TaxService {
     this.taxDataSource = taxDataSource;
   }
 
-  async put(taxDto:TaxDto): Promise<Tax> {
+  async put(taxDto: TaxDto): Promise<Tax> {
     return await this.taxDataSource.put(taxDto);
   }
 

@@ -28,13 +28,13 @@ export class ScoreService {
   async get(annualIncome: number, monthlyCosts: number): Promise<Score> {
     const tax: Tax = await this.taxService.findOne(TaxEnum.ANNUAL_TAX);
     const thresholds = await this.annualCostsThresholdDataSource.find();
-    var annualCostsPercentage = this._getAnnualCostsPercentage(
+    const annualCostsPercentage = this._getAnnualCostsPercentage(
       annualIncome,
       monthlyCosts,
       tax,
     );
 
-    var annualCostsThreshold: AnnualCostsThreshold =
+    const annualCostsThreshold: AnnualCostsThreshold =
       this._getAnnualCostsThreshold(thresholds, annualCostsPercentage);
 
     return await this._saveNewScore(
@@ -49,10 +49,10 @@ export class ScoreService {
     monthlyCosts: number,
     status: ScoreStatus,
   ) {
-    var newScore = new Score();
+    const newScore = new Score();
     newScore.annualIncome = annualIncome;
     newScore.monthlyCosts = monthlyCosts;
-    newScore.status = status
+    newScore.status = status;
     await this.scoreDataSource.save(newScore);
 
     return newScore;
@@ -63,9 +63,10 @@ export class ScoreService {
     monthlyCosts: number,
     tax: Tax,
   ): number {
-    var annualCosts = monthlyCosts * 12;
-    var annualNetCompensation = annualIncome - (annualIncome * tax.value) / 100;
-    var annualCostsPercentage = (annualCosts * 100) / annualNetCompensation;
+    const annualCosts = monthlyCosts * 12;
+    const annualNetCompensation =
+      annualIncome - (annualIncome * tax.value) / 100;
+    const annualCostsPercentage = (annualCosts * 100) / annualNetCompensation;
 
     return annualCostsPercentage;
   }

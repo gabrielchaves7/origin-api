@@ -1,4 +1,10 @@
-import { Controller, Get, ParseFloatPipe, Query, UseFilters } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  ParseFloatPipe,
+  Query,
+  UseFilters,
+} from '@nestjs/common';
 import { ScoreService } from '../service/score.service';
 import { Score } from '../entity/score.entity';
 import { HttpExceptionFilter } from '../../http-exception.filter';
@@ -13,9 +19,6 @@ export class ScoreController {
     @Query('annualIncome', ParseFloatPipe) annualIncome: number,
     @Query('monthlyCosts', ParseFloatPipe) monthlyCosts: number,
   ): Promise<Score> {
-      return await this.scoreService.get(
-        annualIncome,
-        monthlyCosts,
-      );
+    return await this.scoreService.get(annualIncome, monthlyCosts);
   }
 }

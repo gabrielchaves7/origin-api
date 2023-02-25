@@ -20,7 +20,7 @@ describe('Score', () => {
       .get('/score?annualIncome=1000&monthlyCosts=10')
       .expect(200)
       .then((response) => {
-        var score = response.body;
+        const score = response.body;
         expect(score.status).toEqual('HEALTHY');
         expect(score.monthlyCosts).toEqual(10);
         expect(score.annualIncome).toEqual(1000);
@@ -30,13 +30,13 @@ describe('Score', () => {
   it(`/GET score should return 400 when annualIncome is string`, () => {
     return request(app.getHttpServer())
       .get('/score?annualIncome="1000"&monthlyCosts=10')
-      .expect(400)
+      .expect(400);
   });
 
   it(`/GET score should return 400 when monthlyCosts is string`, () => {
     return request(app.getHttpServer())
       .get('/score?annualIncome=1000&monthlyCosts="10"')
-      .expect(400)
+      .expect(400);
   });
 
   afterAll(async () => {

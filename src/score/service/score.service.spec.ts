@@ -62,7 +62,7 @@ describe('ScoreService', () => {
   };
 
   const _createScore = ({ annualIncome, monthlyCosts, status }): Score => {
-    var score = new Score();
+    const score = new Score();
     score.status = status;
     score.annualIncome = annualIncome;
     score.monthlyCosts = monthlyCosts;
@@ -74,7 +74,7 @@ describe('ScoreService', () => {
     min,
     max,
   }): AnnualCostsThreshold => {
-    var annualCostsThreshold = new AnnualCostsThreshold();
+    const annualCostsThreshold = new AnnualCostsThreshold();
     annualCostsThreshold.status = status;
     annualCostsThreshold.min = min;
     annualCostsThreshold.max = max;
@@ -113,17 +113,17 @@ describe('ScoreService', () => {
 
   describe('When ANNUAL_TAX is 8%', () => {
     it('should return HEALTHY if user annual costs represents less than or is equal to 25% of his annual net compensation', async () => {
-      var result = await scoreService.get(1000, 10);
+      const result = await scoreService.get(1000, 10);
       expect(result.status).toBe('HEALTHY');
     });
 
     it('should return MEDIUM if user annual costs is greater than 25% and less than or equal 75% of his annual net compensation,', async () => {
-      var result = await scoreService.get(1000, 30);
+      const result = await scoreService.get(1000, 30);
       expect(result.status).toBe('MEDIUM');
     });
 
     it('should return LOW if user annual costs is greater than 75% of his annual net compensation', async () => {
-      var result = await scoreService.get(1000, 80);
+      const result = await scoreService.get(1000, 80);
       expect(result.status).toBe('LOW');
     });
 
@@ -134,12 +134,12 @@ describe('ScoreService', () => {
     });
 
     it('should call scoreRepository to save the calculated score', async () => {
-      var expectedScore = _createScore({
+      const expectedScore = _createScore({
         annualIncome: 1000,
         monthlyCosts: 10,
         status: ScoreStatus.HEALTHY,
       });
-      var saveSpy = jest.spyOn(scoreDataSource, 'save');
+      const saveSpy = jest.spyOn(scoreDataSource, 'save');
 
       await scoreService.get(1000, 10);
       expect(saveSpy).toHaveBeenCalledTimes(1);
