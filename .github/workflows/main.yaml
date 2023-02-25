@@ -2,13 +2,12 @@ name: origin_api
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -24,5 +23,6 @@ jobs:
       - name: 📊 Check Domain Code Coverage
         uses: VeryGoodOpenSource/very_good_coverage@v2
         with:
-          path: "./coverage/lcov.info"
-          min_coverage: 64
+          path: './coverage/lcov.info'
+          min_coverage: 80
+          exclude: 'src/app.module.ts src/http-exception-filter.ts src/main.ts src/test.helpers.ts src/**/**.module.ts src/**/controller/** '
