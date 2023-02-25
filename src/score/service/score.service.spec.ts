@@ -113,22 +113,22 @@ describe('ScoreService', () => {
 
   describe('When ANNUAL_TAX is 8%', () => {
     it('should return HEALTHY if user annual costs represents less than or is equal to 25% of his annual net compensation', async () => {
-      const result = await scoreService.get(1000, 10);
+      const result = await scoreService.post(1000, 10);
       expect(result.status).toBe('HEALTHY');
     });
 
     it('should return MEDIUM if user annual costs is greater than 25% and less than or equal 75% of his annual net compensation,', async () => {
-      const result = await scoreService.get(1000, 30);
+      const result = await scoreService.post(1000, 30);
       expect(result.status).toBe('MEDIUM');
     });
 
     it('should return LOW if user annual costs is greater than 75% of his annual net compensation', async () => {
-      const result = await scoreService.get(1000, 80);
+      const result = await scoreService.post(1000, 80);
       expect(result.status).toBe('LOW');
     });
 
     it('should call taxRepository.getTax', async () => {
-      await scoreService.get(1000, 10);
+      await scoreService.post(1000, 10);
       expect(getTaxSpy).toHaveBeenCalledTimes(1);
       expect(getTaxSpy).toHaveBeenCalledWith(TaxEnum.ANNUAL_TAX);
     });
@@ -141,13 +141,13 @@ describe('ScoreService', () => {
       });
       const saveSpy = jest.spyOn(scoreDataSource, 'save');
 
-      await scoreService.get(1000, 10);
+      await scoreService.post(1000, 10);
       expect(saveSpy).toHaveBeenCalledTimes(1);
       expect(saveSpy).toHaveBeenCalledWith(expectedScore);
     });
 
     it('should call annualCostsThreshold.find to find the thresholds', async () => {
-      await scoreService.get(1000, 10);
+      await scoreService.post(1000, 10);
       expect(findAnnualCostsThresholdSpy).toHaveBeenCalledTimes(1);
       expect(findAnnualCostsThresholdSpy).toHaveBeenCalledWith();
     });

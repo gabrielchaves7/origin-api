@@ -1,24 +1,21 @@
 import {
+  Body,
   Controller,
-  Get,
-  ParseFloatPipe,
-  Query,
+  Post,
   UseFilters,
 } from '@nestjs/common';
 import { ScoreService } from '../service/score.service';
 import { Score } from '../entity/score.entity';
 import { HttpExceptionFilter } from '../../http-exception.filter';
+import { ScoreRequestDto } from '../dto/score.dto';
 
 @Controller('score')
 export class ScoreController {
   constructor(private scoreService: ScoreService) {}
 
-  @Get('')
+  @Post('')
   @UseFilters(new HttpExceptionFilter())
-  async get(
-    @Query('annualIncome', ParseFloatPipe) annualIncome: number,
-    @Query('monthlyCosts', ParseFloatPipe) monthlyCosts: number,
-  ): Promise<Score> {
-    return await this.scoreService.get(annualIncome, monthlyCosts);
+  async post(@Body() scoreRequestDto: ScoreRequestDto): Promise<Score> {
+    return await this.scoreService.post(scoreRequestDto.annualIncome, scoreRequestDto.monthlyCosts);
   }
 }

@@ -10,6 +10,7 @@ import { AnnualCostsThreshold } from '../entity/annual-costs-threshold.entity';
 import { AnnualCostsThresholdDataSource } from '../datasource/annual-costs-threshold.datasource';
 import { ScoreDataSource } from '../datasource/score.datasource';
 import { TaxDataSource } from '../../tax/datasource/tax.datasource';
+import { ScoreRequestDto } from '../dto/score.dto';
 
 describe('ScoreController', () => {
   let scoreController: ScoreController;
@@ -50,7 +51,7 @@ describe('ScoreController', () => {
 
   describe('score', () => {
     it('should call scoreService.score', async () => {
-      const spy = jest.spyOn(scoreService, 'get').mockImplementation(() =>
+      const spy = jest.spyOn(scoreService, 'post').mockImplementation(() =>
         Promise.resolve(
           _createScore({
             annualIncome: 1000,
@@ -59,7 +60,7 @@ describe('ScoreController', () => {
           }),
         ),
       );
-      const result = await scoreController.get(1000, 10);
+      const result = await scoreController.post(new ScoreRequestDto({annualIncome: 1000, monthlyCosts: 10}));
       expect(result.status).toBe('HEALTHY');
       expect(result.annualIncome).toBe(1000);
       expect(result.monthlyCosts).toBe(10);

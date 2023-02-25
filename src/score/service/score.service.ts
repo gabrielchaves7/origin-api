@@ -25,7 +25,7 @@ export class ScoreService {
     this.scoreDataSource = scoreDataSource;
   }
 
-  async get(annualIncome: number, monthlyCosts: number): Promise<Score> {
+  async post(annualIncome: number, monthlyCosts: number): Promise<Score> {
     const tax: Tax = await this.taxService.findOne(TaxEnum.ANNUAL_TAX);
     const thresholds = await this.annualCostsThresholdDataSource.find();
     const annualCostsPercentage = this._getAnnualCostsPercentage(
