@@ -7,14 +7,10 @@ import { AnnualCostsThreshold } from '../entity/annual-costs-threshold.entity';
 @Injectable()
 @Dependencies(getRepositoryToken(Score))
 export class AnnualCostsThresholdDataSource {
-  annualCostsThresholdRepository: Repository<AnnualCostsThreshold>;
-
   constructor(
     @InjectRepository(AnnualCostsThreshold)
-    annualCostsThresholdRepository: Repository<AnnualCostsThreshold>,
-  ) {
-    this.annualCostsThresholdRepository = annualCostsThresholdRepository;
-  }
+    private readonly annualCostsThresholdRepository: Repository<AnnualCostsThreshold>,
+  ) {}
 
   async find(): Promise<AnnualCostsThreshold[]> {
     return await this.annualCostsThresholdRepository.find();

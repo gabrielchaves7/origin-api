@@ -10,20 +10,12 @@ import { AnnualCostsThresholdDataSource } from '../datasource/annual-costs-thres
 @Injectable()
 @Dependencies(getRepositoryToken(Score))
 export class ScoreService {
-  annualCostsThresholdDataSource: AnnualCostsThresholdDataSource;
-  taxService: TaxService;
-  scoreDataSource: ScoreDataSource;
-
   constructor(
     @Inject(AnnualCostsThresholdDataSource)
-    annualCostsThresholdDataSource: AnnualCostsThresholdDataSource,
-    @Inject(TaxService) taxService: TaxService,
-    @Inject(ScoreDataSource) scoreDataSource: ScoreDataSource,
-  ) {
-    this.taxService = taxService;
-    this.annualCostsThresholdDataSource = annualCostsThresholdDataSource;
-    this.scoreDataSource = scoreDataSource;
-  }
+    private readonly annualCostsThresholdDataSource: AnnualCostsThresholdDataSource,
+    @Inject(TaxService) private readonly taxService: TaxService,
+    @Inject(ScoreDataSource) private readonly scoreDataSource: ScoreDataSource,
+  ) {}
 
   async post(annualIncome: number, monthlyCosts: number): Promise<Score> {
     const tax: Tax = await this.taxService.findOne(TaxEnum.ANNUAL_TAX);

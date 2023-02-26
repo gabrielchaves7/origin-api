@@ -6,11 +6,10 @@ import { Score } from '../entity/score.entity';
 @Injectable()
 @Dependencies(getRepositoryToken(Score))
 export class ScoreDataSource {
-  scoreRepository: Repository<Score>;
-
-  constructor(@InjectRepository(Score) scoreRepository: Repository<Score>) {
-    this.scoreRepository = scoreRepository;
-  }
+  constructor(
+    @InjectRepository(Score)
+    private readonly scoreRepository: Repository<Score>,
+  ) {}
 
   async save({ annualIncome, monthlyCosts, status }): Promise<Score> {
     const newScore = this.scoreRepository.create({

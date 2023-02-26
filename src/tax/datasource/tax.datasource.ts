@@ -7,11 +7,9 @@ import { TaxDto } from '../dto/tax.dto';
 @Injectable()
 @Dependencies(getRepositoryToken(Tax))
 export class TaxDataSource {
-  taxRepository: Repository<Tax>;
-
-  constructor(@InjectRepository(Tax) taxRepository: Repository<Tax>) {
-    this.taxRepository = taxRepository;
-  }
+  constructor(
+    @InjectRepository(Tax) private readonly taxRepository: Repository<Tax>,
+  ) {}
 
   async put(taxDto: TaxDto): Promise<Tax> {
     return this.taxRepository.save(taxDto);
