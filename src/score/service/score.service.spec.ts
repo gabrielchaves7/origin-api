@@ -1,4 +1,4 @@
-import { Test, TestingModule } from '@nestjs/testing';
+
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ScoreService } from './score.service';
 import { Score, ScoreStatus } from '../entity/score.entity';
@@ -10,6 +10,7 @@ import { ScoreDataSource } from '../datasource/score.datasource';
 import { TaxDataSource } from '../../tax/datasource/tax.datasource';
 import { AnnualCostsThresholdDataSource } from '../datasource/annual-costs-threshold.datasource';
 import { TaxDto } from '../../tax/dto/tax.dto';
+import { Test, TestingModule } from '@nestjs/testing';
 
 describe('ScoreService', () => {
   let scoreService: ScoreService;

@@ -70,6 +70,5 @@ To view the coverage report you need to:
 coverage/lcov-report/index.html
 
 ### Integration tests
-1. First make sure the project is running. You can use docker compose or run manually.
-2. Then run 
+1. Run the following command:
   ```npm run test:e2e```
