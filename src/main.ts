@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['log', 'error', 'warn'],
   });
-  
+
   // route global prefix
   app.setGlobalPrefix('api');
 
@@ -23,7 +23,7 @@ async function bootstrap() {
     .setTitle('Origin API example')
     .setDescription('The Origin API description')
     .setVersion('1.0')
-    .build();  
+    .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
