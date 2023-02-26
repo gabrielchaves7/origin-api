@@ -11,7 +11,7 @@ export class ScoreController {
   @Post('')
   @UseFilters(new HttpExceptionFilter())
   async post(@Body() scoreRequestDto: ScoreRequestDto): Promise<Score> {
-    return await this.scoreService.post(
+    return this.scoreService.post(
       scoreRequestDto.annualIncome,
       scoreRequestDto.monthlyCosts,
     );

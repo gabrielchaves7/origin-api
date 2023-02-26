@@ -26,15 +26,27 @@ describe('TaxService', () => {
     taxDataSource = moduleRef.get<TaxDataSource>(TaxDataSource);
   });
 
+  const _createTaxDto = ({ name, value }): TaxDto => {
+    const taxDto = new TaxDto();
+    taxDto.name = name;
+    taxDto.value = value;
+
+    return taxDto;
+  };
+
   describe('update tax', () => {
     it('should call taxDataSource.put', async () => {
       const spy = jest
         .spyOn(taxDataSource, 'put')
         .mockImplementation(() =>
-          Promise.resolve(new TaxDto({ name: TaxEnum.ANNUAL_TAX, value: 10 })),
+          Promise.resolve(
+            _createTaxDto({ name: TaxEnum.ANNUAL_TAX, value: 10 }),
+          ),
         );
 
-      await taxService.put(new TaxDto({ name: TaxEnum.ANNUAL_TAX, value: 10 }));
+      await taxService.put(
+        _createTaxDto({ name: TaxEnum.ANNUAL_TAX, value: 10 }),
+      );
 
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith({ name: TaxEnum.ANNUAL_TAX, value: 10 });
@@ -46,7 +58,9 @@ describe('TaxService', () => {
       const spy = jest
         .spyOn(taxDataSource, 'findOne')
         .mockImplementation(() =>
-          Promise.resolve(new TaxDto({ name: TaxEnum.ANNUAL_TAX, value: 8 })),
+          Promise.resolve(
+            _createTaxDto({ name: TaxEnum.ANNUAL_TAX, value: 8 }),
+          ),
         );
       await taxService.findOne(TaxEnum.ANNUAL_TAX);
 

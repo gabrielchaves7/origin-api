@@ -14,10 +14,10 @@ export class TaxDataSource {
   }
 
   async put(taxDto: TaxDto): Promise<Tax> {
-    return await this.taxRepository.save(taxDto);
+    return this.taxRepository.save(taxDto);
   }
 
   async findOne(name: TaxEnum): Promise<Tax> {
-    return await this.taxRepository.findOneBy({ name });
+    return this.taxRepository.findOneBy({ name });
   }
 }

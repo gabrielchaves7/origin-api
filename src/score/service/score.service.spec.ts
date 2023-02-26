@@ -1,4 +1,3 @@
-
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ScoreService } from './score.service';
 import { Score, ScoreStatus } from '../entity/score.entity';
@@ -57,7 +56,7 @@ describe('ScoreService', () => {
     getTaxSpy = jest
       .spyOn(taxService, 'findOne')
       .mockImplementation(() =>
-        Promise.resolve(new TaxDto({ name: TaxEnum.ANNUAL_TAX, value: 8 })),
+        Promise.resolve(_createTaxDto({ name: TaxEnum.ANNUAL_TAX, value: 8 })),
       );
   };
 
@@ -67,6 +66,14 @@ describe('ScoreService', () => {
     score.annualIncome = annualIncome;
     score.monthlyCosts = monthlyCosts;
     return score;
+  };
+
+  const _createTaxDto = ({ name, value }): TaxDto => {
+    const taxDto = new TaxDto();
+    taxDto.name = name;
+    taxDto.value = value;
+
+    return taxDto;
   };
 
   const _createAnnualCostsThreshold = ({

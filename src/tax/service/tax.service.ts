@@ -14,10 +14,10 @@ export class TaxService {
   }
 
   async put(taxDto: TaxDto): Promise<Tax> {
-    return await this.taxDataSource.put(taxDto);
+    return this.taxDataSource.put(taxDto);
   }
 
   async findOne(name: TaxEnum): Promise<Tax> {
-    return await this.taxDataSource.findOne(name);
+    return this.taxDataSource.findOne(name);
   }
 }

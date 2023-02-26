@@ -37,7 +37,7 @@ export class ScoreService {
     const annualCostsThreshold: AnnualCostsThreshold =
       this._getAnnualCostsThreshold(thresholds, annualCostsPercentage);
 
-    return await this.scoreDataSource.save({
+    return this.scoreDataSource.save({
       annualIncome,
       monthlyCosts,
       status: annualCostsThreshold.status,

@@ -10,8 +10,6 @@ export class TaxController {
 
   @Put()
   async put(@Body() taxDto: TaxDto): Promise<TaxDto> {
-    const updatedTax = await this.taxService.put(taxDto);
-
-    return new TaxDto({ name: updatedTax.name, value: updatedTax.value });
+    return this.taxService.put(taxDto);
   }
 }
