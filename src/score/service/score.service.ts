@@ -2,7 +2,7 @@ import { Injectable, Dependencies, Inject } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Tax, TaxEnum } from '../../tax/entity/tax.entity';
 import { TaxService } from '../../tax/service/tax.service';
-import { Score, ScoreStatus } from '../entity/score.entity';
+import { Score } from '../entity/score.entity';
 import { AnnualCostsThreshold } from '../entity/annual-costs-threshold.entity';
 import { ScoreDataSource } from '../datasource/score.datasource';
 import { AnnualCostsThresholdDataSource } from '../datasource/annual-costs-threshold.datasource';
@@ -37,25 +37,11 @@ export class ScoreService {
     const annualCostsThreshold: AnnualCostsThreshold =
       this._getAnnualCostsThreshold(thresholds, annualCostsPercentage);
 
-    return await this._saveNewScore(
+    return await this.scoreDataSource.save({
       annualIncome,
       monthlyCosts,
-      annualCostsThreshold.status,
-    );
-  }
-
-  async _saveNewScore(
-    annualIncome: number,
-    monthlyCosts: number,
-    status: ScoreStatus,
-  ) {
-    const newScore = new Score();
-    newScore.annualIncome = annualIncome;
-    newScore.monthlyCosts = monthlyCosts;
-    newScore.status = status;
-    await this.scoreDataSource.save(newScore);
-
-    return newScore;
+      status: annualCostsThreshold.status,
+    });
   }
 
   _getAnnualCostsPercentage(

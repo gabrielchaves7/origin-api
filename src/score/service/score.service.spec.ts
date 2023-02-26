@@ -32,7 +32,6 @@ describe('ScoreService', () => {
 
     spyGetTax();
     spyFindAnnualCostsThreshold();
-    spyScoreDataSource();
   });
 
   const createTestingModule = async (): Promise<TestingModule> => {
@@ -105,35 +104,50 @@ describe('ScoreService', () => {
       );
   };
 
-  const spyScoreDataSource = () => {
+  const spyScoreDataSource = () =>
     jest
       .spyOn(scoreDataSource, 'save')
-      .mockImplementationOnce(() => Promise.resolve());
-  };
-
+      .mockImplementationOnce(() => Promise.resolve(new Score()));
   describe('When ANNUAL_TAX is 8%', () => {
     it('should return HEALTHY if user annual costs represents less than or is equal to 25% of his annual net compensation', async () => {
-      const result = await scoreService.post(1000, 10);
-      expect(result.status).toBe('HEALTHY');
+      const spy = spyScoreDataSource();
+      await scoreService.post(1000, 10);
+      expect(spy).toHaveBeenCalledWith({
+        annualIncome: 1000,
+        monthlyCosts: 10,
+        status: 'HEALTHY',
+      });
     });
 
     it('should return MEDIUM if user annual costs is greater than 25% and less than or equal 75% of his annual net compensation,', async () => {
-      const result = await scoreService.post(1000, 30);
-      expect(result.status).toBe('MEDIUM');
+      const spy = spyScoreDataSource();
+      await scoreService.post(1000, 30);
+      expect(spy).toHaveBeenCalledWith({
+        annualIncome: 1000,
+        monthlyCosts: 30,
+        status: 'MEDIUM',
+      });
     });
 
     it('should return LOW if user annual costs is greater than 75% of his annual net compensation', async () => {
-      const result = await scoreService.post(1000, 80);
-      expect(result.status).toBe('LOW');
+      const spy = spyScoreDataSource();
+      await scoreService.post(1000, 80);
+      expect(spy).toHaveBeenCalledWith({
+        annualIncome: 1000,
+        monthlyCosts: 80,
+        status: 'LOW',
+      });
     });
 
     it('should call taxRepository.getTax', async () => {
+      spyScoreDataSource();
       await scoreService.post(1000, 10);
       expect(getTaxSpy).toHaveBeenCalledTimes(1);
       expect(getTaxSpy).toHaveBeenCalledWith(TaxEnum.ANNUAL_TAX);
     });
 
     it('should call scoreRepository to save the calculated score', async () => {
+      spyScoreDataSource();
       const expectedScore = _createScore({
         annualIncome: 1000,
         monthlyCosts: 10,
@@ -147,6 +161,7 @@ describe('ScoreService', () => {
     });
 
     it('should call annualCostsThreshold.find to find the thresholds', async () => {
+      spyScoreDataSource();
       await scoreService.post(1000, 10);
       expect(findAnnualCostsThresholdSpy).toHaveBeenCalledTimes(1);
       expect(findAnnualCostsThresholdSpy).toHaveBeenCalledWith();

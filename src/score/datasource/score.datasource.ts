@@ -12,7 +12,12 @@ export class ScoreDataSource {
     this.scoreRepository = scoreRepository;
   }
 
-  async save(score: Score): Promise<void> {
-    await this.scoreRepository.save(score);
+  async save({ annualIncome, monthlyCosts, status }): Promise<Score> {
+    const newScore = this.scoreRepository.create({
+      annualIncome,
+      monthlyCosts,
+      status,
+    });
+    return await this.scoreRepository.save(newScore);
   }
 }

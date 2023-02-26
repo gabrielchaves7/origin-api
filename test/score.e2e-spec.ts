@@ -117,9 +117,9 @@ describe('Score', () => {
         expect(error).toEqual({
           error: 'Bad Request',
           message: [
-            "monthlyCosts must not be greater than 1000000000",
-            "monthlyCosts must not be less than 0",
-            "monthlyCosts must be a number conforming to the specified constraints"
+            'monthlyCosts must not be greater than 1000000000',
+            'monthlyCosts must not be less than 0',
+            'monthlyCosts must be a number conforming to the specified constraints',
           ],
           statusCode: 400,
         });
