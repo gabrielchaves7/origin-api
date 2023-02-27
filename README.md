@@ -3,6 +3,10 @@
 
 ## Getting Started 🚀
 
+### Overview
+The project aims to helps people putting their financial lives on track. To achieve this, we offer a tool to calculate person financial wellness based on person analyzing annual income and monthly costs. 
+
+---
 ### Docker
 The first thing you need is to setup docker, please follow the step: 
 1. https://www.docker.com/get-started/
@@ -43,15 +47,6 @@ You can also run the project without using the docker. Following these steps:
   ```npm run migrations```
 
 ---
-## Architecture
-The project uses NestJS and follows a simple structure which is:
-Controller → Service → DataSource.
-
--  Controller validate the requests and handle the exceptions.
--  Bussiness logic lives inside the Service.
--  DataSource make the querys to the database or other API's.
-
----
 ## Running Tests 🧪
 
 ### Unit tests
@@ -72,3 +67,25 @@ coverage/lcov-report/index.html
 ### Integration tests
 1. Run the following command:
   ```npm run test:e2e```
+
+--- 
+## Architecture 
+The project uses NestJS and follows a simple structure which is:
+Controller → Service → DataSource.
+
+-  Controller validate the requests and handle the exceptions.
+-  Bussiness logic lives inside the Service.
+-  DataSource make the querys to the database or other API's.
+
+## Structure Decisions
+For the annual tax value I decided to store it at the database, this make possible to change the tax value without redeploying the project. You can check the endpoint at the swagger.
+
+I also store the "annual thresholds" at the database for the same reason, but I didn't have time to make the endpoint for it.
+
+And for each score calculated I save the value at the database. This is important for keeping track of the data created, and generating reports in the future.
+
+### Next steps and improvements
+1. Add error monitoring and logging to the project.
+2. Create performance metrics.
+3. In-memory cache for tax and annual thresholds.
+4. Run E2E tests at the pipeline.
