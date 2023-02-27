@@ -87,5 +87,6 @@ And for each score calculated I save the value at the database. This is importan
 ### Next steps and improvements
 1. Add error monitoring and logging to the project.
 2. Create performance metrics.
-3. In-memory cache for tax and annual thresholds.
-4. Run E2E tests at the pipeline.
+3. Feature flags.
+4. In-memory cache for tax and annual thresholds.
+5. Run E2E tests at the pipeline.
